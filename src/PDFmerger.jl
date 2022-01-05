@@ -1,4 +1,4 @@
-module PDF_merger
+module PDFmerger
 
 import Base.Filesystem
 using Poppler_jll: pdfunite, pdfinfo
