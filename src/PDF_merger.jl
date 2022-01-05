@@ -5,7 +5,8 @@ using Poppler_jll: pdfunite, pdfinfo
 
 export merge_pdfs, append_pdf!
 
-function merge_pdfs(files::Vector, destination="merged.pdf"; cleanup=false)
+function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
+                    cleanup=false) where T <: AbstractString
     if destination in files
         # rename existing file
         Filesystem.mv(destination, destination * "_x_")
@@ -26,8 +27,10 @@ function merge_pdfs(files::Vector, destination="merged.pdf"; cleanup=false)
     destination
 end
 
+merge_pdfs(file::AbstractString, destination::AbstractString="merged.pdf"; kwargs...) =
+    merge_pdfs([file], destination; kwargs...)
 
-function append_pdf!(file1, file2; create=true, cleanup=false)
+function append_pdf!(file1::AbstractString, file2::AbstractString; create=true, cleanup=false)
     if Filesystem.isfile(file1)
         merge_pdfs([file1, file2], file1, cleanup=cleanup)
     else

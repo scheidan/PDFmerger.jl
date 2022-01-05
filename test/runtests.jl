@@ -40,6 +40,18 @@ test_files = [joinpath(pkgdir(PDF_merger), "test/file_1.pdf"),
     @test PDF_merger.n_pages(out_file) == 2
     @test readdir(test_dir) |> length == 1
 
+    # -- single file
+    # setup test directory
+    test_dir = Filesystem.mktempdir()
+    single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
+    Filesystem.cp.(test_files, single_files)
+
+
+    merge_pdfs(single_files[1], single_files[1], cleanup=true)
+
+    @test PDF_merger.n_pages(single_files[1]) == 1
+    @test "file_1.pdf" ∈ readdir(test_dir)
+
 end
 
 
