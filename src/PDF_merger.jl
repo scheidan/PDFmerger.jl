@@ -1,15 +1,15 @@
 module PDF_merger
 
 import Base.Filesystem
-using Poppler_jll: pdfunite
+using Poppler_jll: pdfunite, pdfinfo
 
 export merge_pdfs, append_pdf!
 
 function merge_pdfs(files::Vector, destination="merged.pdf"; cleanup=false)
     if destination in files
         # rename existing file
-        Filesystem.mv(destination, "_x_" * destination)
-        files[files .== destination] .= "_x_" * destination
+        Filesystem.mv(destination, destination * "_x_")
+        files[files .== destination] .=  destination * "_x_"
     end
 
     # merge pdf
@@ -18,11 +18,12 @@ function merge_pdfs(files::Vector, destination="merged.pdf"; cleanup=false)
     end
 
     # remove temp files
-    Filesystem.rm("_x_" * destination)
+    Filesystem.rm(destination * "_x_", force=true)
     if cleanup
         Filesystem.rm.(files, force=true)
     end
 
+    destination
 end
 
 
@@ -39,5 +40,19 @@ function append_pdf!(file1, file2; create=true, cleanup=false)
     end
 end
 
+
+"""
+Count number of pages
+"""
+function n_pages(file)
+    io = IOBuffer()
+    pdfinfo() do info
+        run(pipeline(`$info $file`, stdout=io))
+    end
+    str = String(take!(io))
+
+    n = match(r"Pages:\s+(?<npages>\d+)", str)[:npages]
+    parse(Int, n)
+end
 
 end
