@@ -40,4 +40,4 @@ All five plots are contained in `allplots.pdf` and the temporary file is deleted
 
 All the heavy lifting is done by
 [`Poppler`](https://poppler.freedesktop.org/). Thanks to all maintainers
-of `Poppler` and `Poppler_jll.jl`](https://github.com/JuliaBinaryWrappers/Poppler_jll.jl)!
+of `Poppler` and [`Poppler_jll.jl`](https://github.com/JuliaBinaryWrappers/Poppler_jll.jl)!
