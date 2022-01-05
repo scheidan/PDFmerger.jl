@@ -98,7 +98,7 @@ function n_pages(file)
     str = String(take!(io))
 
     m = match(r"Pages:\s+(?<npages>\d+)", str)
-    isnothing(m) || error("Could not extract number of pages from:\n\n $str")
+    isnothing(m) && error("Could not extract number of pages from:\n\n $str")
     parse(Int, m[:npages])
 end
 
