@@ -5,8 +5,23 @@ using Poppler_jll: pdfunite, pdfinfo
 
 export merge_pdfs, append_pdf!
 
+"""
+```
+  merge_pdfs(files::Vector{AbstractString}, destination::AbstractString = "merged.pdf";
+                    cleanup::Bool = false)
+```
+
+Merge all pdf files in `files` into a pdf `destination`. Returns the name
+ of the desintation file.
+
+## Arguments
+
+- `files`: array of file names to merge
+- `destination`: name of the newly created pdf
+- `cleanup`: if `true`, all `files` are deleted after merging
+"""
 function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
-                    cleanup=false) where T <: AbstractString
+                    cleanup::Bool = false) where T <: AbstractString
     if destination in files
         # rename existing file
         Filesystem.mv(destination, destination * "_x_")
@@ -30,7 +45,35 @@ end
 merge_pdfs(file::AbstractString, destination::AbstractString="merged.pdf"; kwargs...) =
     merge_pdfs([file], destination; kwargs...)
 
-function append_pdf!(file1::AbstractString, file2::AbstractString; create=true, cleanup=false)
+"""
+```
+  append_pdf!(file1::AbstractString, file2::AbstractString;
+              create::Bool = true, cleanup::Bool = false)
+```
+
+Appends the pdf `file2` to pdf `file1`.
+
+## Arguments
+
+- `create`: if `true`, `file1` is created if not existing.
+- `cleanup`: if `true`, all `file2` is deleted after appending
+
+## Example
+
+Create a single pdf
+containing many plots on separate pages:
+```Julia
+using Plots
+
+for i in 1:5
+    p = plot(rand(33));
+    savefig(p, "temp.pdf")
+    append_pdf!("allplots.pdf", "temp.pdf", cleanup=true)
+end
+```
+"""
+function append_pdf!(file1::AbstractString, file2::AbstractString;
+                     create::Bool = true, cleanup::Bool = false)
     if Filesystem.isfile(file1)
         merge_pdfs([file1, file2], file1, cleanup=cleanup)
     else
@@ -54,8 +97,9 @@ function n_pages(file)
     end
     str = String(take!(io))
 
-    n = match(r"Pages:\s+(?<npages>\d+)", str)[:npages]
-    parse(Int, n)
+    m = match(r"Pages:\s+(?<npages>\d+)", str)
+    isnothing(m) || error("Could not extract number of pages from:\n\n $str")
+    parse(Int, m[:npages])
 end
 
 end
