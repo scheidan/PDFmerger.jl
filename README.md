@@ -4,23 +4,23 @@
 
 
 
-A simple tool to merge pdf files on all platforms.
+A simple tool to merge pdf files on Linux, OS X and Windows.
 
 ## Usage
 
-#### Merge pdf files
+### Merge pdf files
 
 ```Julia
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf")
 ```
-Note, files can be multiple times.
+Note, files can be merged multiple times.
 
 Use the `cleanup` option to only keep `merged.pdf`:
 ```Julia
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf", cleanup=true)
 ```
 
-#### Append to a file
+### Append to a file
 
 Appending with `append_pdf!` is particularly useful to create a single pdf
 containing many plots on separate pages:
@@ -33,4 +33,11 @@ for i in 1:5
     append_pdf!("allplots.pdf", "temp.pdf", cleanup=true)
 end
 ```
-All plots are contained in `allplots.pdf` and the temporary file is deleted.
+All five plots are contained in `allplots.pdf` and the temporary file is deleted.
+
+
+## Acknowledgments
+
+All the heavy lifting is done by
+[`Poppler`](https://poppler.freedesktop.org/). Thanks to all maintainers
+of `Poppler` and `Poppler_jll.jl`](https://github.com/JuliaBinaryWrappers/Poppler_jll.jl)!
