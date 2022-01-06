@@ -91,11 +91,10 @@ end
 Count number of pages
 """
 function n_pages(file)
-    io = IOBuffer()
-    pdfinfo() do info
-        run(pipeline(`$info $file`, stdout=io))
+
+    str = pdfinfo() do info
+        read(`$info $file`, String)
     end
-    str = String(take!(io))
 
     m = match(r"Pages:\s+(?<npages>\d+)", str)
     isnothing(m) && error("Could not extract number of pages from:\n\n $str")
