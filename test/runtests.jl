@@ -2,16 +2,16 @@ using PDFmerger
 using Test
 import Base.Filesystem
 
-test_files = [joinpath(pkgdir(PDFmerger), "test/file_1.pdf"),
-              joinpath(pkgdir(PDFmerger), "test/file_2.pdf")]
+test_files = [joinpath(pkgdir(PDFmerger), "test", "file_1.pdf"),
+              joinpath(pkgdir(PDFmerger), "test", "file_2.pdf")]
 
 @testset "merge_pdfs" begin
 
     # -- no cleanup
     # setup test directory
-    test_dir = Filesystem.mktempdir()
+    test_dir = mktempdir()
     single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
-    Filesystem.cp.(test_files, single_files)
+    cp.(test_files, single_files)
 
     out_file = joinpath(test_dir, "out.pdf")
 
@@ -30,9 +30,9 @@ test_files = [joinpath(pkgdir(PDFmerger), "test/file_1.pdf"),
 
     # -- with cleanup
     # setup test directory
-    test_dir = Filesystem.mktempdir()
+    test_dir = mktempdir()
     single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
-    Filesystem.cp.(test_files, single_files)
+    cp.(test_files, single_files)
 
     out_file = joinpath(test_dir, "out.pdf")
 
@@ -42,9 +42,9 @@ test_files = [joinpath(pkgdir(PDFmerger), "test/file_1.pdf"),
 
     # -- single file
     # setup test directory
-    test_dir = Filesystem.mktempdir()
+    test_dir = mktempdir()
     single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
-    Filesystem.cp.(test_files, single_files)
+    cp.(test_files, single_files)
 
 
     merge_pdfs(single_files[1], single_files[1], cleanup=true)
@@ -59,9 +59,9 @@ end
 
     # -- no cleanup
     # setup test directory
-    test_dir = Filesystem.mktempdir()
+    test_dir = mktempdir()
     single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
-    Filesystem.cp.(test_files, single_files)
+    cp.(test_files, single_files)
 
     out_file = joinpath(test_dir, "out.pdf")
 
@@ -81,9 +81,9 @@ end
 
     # -- with cleanup
     # setup test directory
-    test_dir = Filesystem.mktempdir()
+    test_dir = mktempdir()
     single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
-    Filesystem.cp.(test_files, single_files)
+    cp.(test_files, single_files)
 
     out_file = joinpath(test_dir, "out.pdf")
 
