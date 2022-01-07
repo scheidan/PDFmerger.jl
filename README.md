@@ -4,11 +4,13 @@
 
 
 
-A simple package to merge pdf files on Linux, OS X and Windows.
+A simple package to merge PDF (Portable Document Format) files on Linux, OS X and Windows. Only two functions are exported:
+- `merge_pdf`
+- `append_pdf!`
 
 ## Usage
 
-### Merge pdf files
+### Merge multible PDF files
 
 ```Julia
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf")
@@ -20,9 +22,9 @@ Use the `cleanup` option to delete the single files after merging:
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf", cleanup=true)
 ```
 
-### Append to a file
+### Append a PDF to another PDF
 
-Appending with `append_pdf!` is particularly useful to create a single pdf
+Appending with `append_pdf!` is particularly useful to create a single PDF
 that contains multiple plots on separate pages:
 ```Julia
 using Plots
