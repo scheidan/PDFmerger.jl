@@ -11,8 +11,8 @@ export merge_pdfs, append_pdf!
                     cleanup::Bool = false)
 ```
 
-Merge all pdf files in `files` into a pdf `destination`. Returns the name
- of the desintation file.
+Merge all PDF files listed in `files` into a PDF named `destination`. Returns the name
+ of the destination file.
 
 ## Arguments
 
@@ -74,7 +74,7 @@ merge_pdfs(file::AbstractString, destination::AbstractString="merged.pdf"; kwarg
               create::Bool = true, cleanup::Bool = false)
 ```
 
-Appends the pdf `file2` to pdf `file1`.
+Appends the PDF `file2` to PDF `file1`.
 
 ## Arguments
 
@@ -83,8 +83,7 @@ Appends the pdf `file2` to pdf `file1`.
 
 ## Example
 
-Create a single pdf
-containing many plots on separate pages:
+Create a single PDF containing a page for each plot:
 ```Julia
 using Plots
 
