@@ -27,7 +27,7 @@ end
     merge_pdfs(single_files, out_file)
     @test PDFmerger.n_pages(out_file) == 2
 
-    # test existing file with itself
+    # test merging existing file with itself
     merge_pdfs([single_files..., out_file], out_file)
     @test PDFmerger.n_pages(out_file) == 2 + 2
 
@@ -46,18 +46,9 @@ end
     @test PDFmerger.n_pages(out_file) == 2
     @test readdir(test_dir) |> length == 1
 
-    # -- single file
+
+    # -- large number of files
     # setup test directory
-    test_dir = mktempdir()
-    single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
-    cp.(test_files, single_files)
-
-    merge_pdfs(single_files[1], single_files[1], cleanup=true)
-
-    @test PDFmerger.n_pages(single_files[1]) == 1
-    @test "file_1.pdf" ∈ readdir(test_dir)
-
-    # large number of files
     test_dir = mktempdir()
     single_file = joinpath(test_dir, "file.pdf")
     cp(test_files[1], single_file)

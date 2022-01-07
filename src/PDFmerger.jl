@@ -65,8 +65,7 @@ function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
     destination
 end
 
-merge_pdfs(file::AbstractString, destination::AbstractString="merged.pdf"; kwargs...) =
-    merge_pdfs([file], destination; kwargs...)
+
 
 """
 ```
