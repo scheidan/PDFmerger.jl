@@ -22,19 +22,42 @@ Merge all pdf files in `files` into a pdf `destination`. Returns the name
 """
 function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
                     cleanup::Bool = false) where T <: AbstractString
-    if destination in files
+    if destination ∈ files
         # rename existing file
         Filesystem.mv(destination, destination * "_x_")
         files[files .== destination] .=  destination * "_x_"
     end
 
-    # merge pdf
-    pdfunite() do unite
-        run(`$unite $files $destination`)
+    # Merge large number of files iteratively, because there
+    # is a (OS dependent) limit how many files 'pdfunit' can handel at once.
+    # See: https://gitlab.freedesktop.org/poppler/poppler/-/issues/334
+    filemax = 200
+
+    k = 1
+    for files_part in Base.Iterators.partition(files, filemax)
+        if k == 1
+            outfile_tmp2 = "_temp_destination_$k"
+
+            pdfunite() do unite
+                run(`$unite $files_part $outfile_tmp2`)
+            end
+        else
+            outfile_tmp1 = "_temp_destination_$(k-1)"
+            outfile_tmp2 = "_temp_destination_$k"
+
+            pdfunite() do unite
+                run(`$unite $outfile_tmp1 $files_part $outfile_tmp2`)
+            end
+        end
+        k += 1
     end
+
+    # rename last file
+    Filesystem.mv("_temp_destination_$(k-1)", destination, force=true)
 
     # remove temp files
     Filesystem.rm(destination * "_x_", force=true)
+    Filesystem.rm.("_temp_destination_$(i)" for i in 1:(k-2))
     if cleanup
         Filesystem.rm.(files, force=true)
     end

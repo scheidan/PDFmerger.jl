@@ -5,6 +5,12 @@ import Base.Filesystem
 test_files = [joinpath(pkgdir(PDFmerger), "test", "file_1.pdf"),
               joinpath(pkgdir(PDFmerger), "test", "file_2.pdf")]
 
+function make_n_copies(file, n)
+    for i in 1:n
+        cp(file, replace(file, r"\.pdf$" => "$(i).pdf"), force=true)
+    end
+end
+
 @testset "merge_pdfs" begin
 
     # -- no cleanup
@@ -46,12 +52,24 @@ test_files = [joinpath(pkgdir(PDFmerger), "test", "file_1.pdf"),
     single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
     cp.(test_files, single_files)
 
-
     merge_pdfs(single_files[1], single_files[1], cleanup=true)
 
     @test PDFmerger.n_pages(single_files[1]) == 1
     @test "file_1.pdf" ∈ readdir(test_dir)
 
+    # large number of files
+    test_dir = mktempdir()
+    single_file = joinpath(test_dir, "file.pdf")
+    cp(test_files[1], single_file)
+
+    out_file = joinpath(test_dir, "out.pdf")
+
+    n = 1500
+    make_n_copies(single_file, n)
+    readdir(test_dir)
+    merge_pdfs([joinpath(test_dir, "file$i.pdf") for i in 1:n], out_file, cleanup=true)
+    @test PDFmerger.n_pages(out_file) == n
+    @test readdir(test_dir) |> length == 2
 end
 
 
