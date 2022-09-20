@@ -120,3 +120,39 @@ end
     @test readdir(test_dir) |> length == 1
 
 end
+
+@testset "split_pdf" begin
+
+    # -- no cleanup
+    # setup test directory
+    test_dir = mktempdir()
+    single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
+    cp.(test_files, single_files)
+    merged_file = joinpath(test_dir, "test.pdf")
+    merge_pdfs(single_files, merged_file, cleanup=true)
+
+    split_pdf(merged_file)
+    @test length(readdir(test_dir)) == 3
+
+    # - split file with a single page
+    # setup test directory
+    test_dir = mktempdir()
+    single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
+    cp.(test_files, single_files)
+
+    split_pdf(single_files[1])
+    @test "file_1_1.pdf" ∈ readdir(test_dir)
+
+    # -- with cleanup
+    # setup test directory
+    test_dir = mktempdir()
+    single_files = joinpath.(test_dir, ["file_1.pdf", "file_2.pdf"])
+    cp.(test_files, single_files)
+    merged_file = joinpath(test_dir, "test.pdf")
+    merge_pdfs(single_files, merged_file, cleanup=true)
+
+    split_pdf(merged_file, cleanup=true)
+    @test length(readdir(test_dir)) == 2
+
+
+end

@@ -1,9 +1,9 @@
 module PDFmerger
 
 import Base.Filesystem
-using Poppler_jll: pdfunite, pdfinfo
+using Poppler_jll: pdfunite, pdfinfo, pdfseparate
 
-export merge_pdfs, append_pdf!
+export merge_pdfs, split_pdf, append_pdf!
 
 """
 ```
@@ -121,5 +121,36 @@ function n_pages(file)
     isnothing(m) && error("Could not extract number of pages from:\n\n $str")
     parse(Int, m[:npages])
 end
+
+
+"""
+```
+  split_pdf(file::AbstractString; cleanup::Bool = false)
+```
+
+Split a pdf document in seperated pages.
+
+## Arguments
+
+- `file`: name of file to spitted
+- `cleanup`: if `true`, `file` is deleted after splitting
+"""
+function split_pdf(file::AbstractString; cleanup=false)
+
+    file_no_ending = replace(file, r"\.pdf$" => "")
+
+    n = n_pages(file) |> ndigits
+    numberformat = n > 1 ? "%0$(n)d" : "%d"
+
+    pdfseparate() do seperate
+        run(`$seperate $file $(file_no_ending)_$numberformat.pdf`)
+    end
+
+    if cleanup
+        Filesystem.rm(file, force=true)
+    end
+
+end
+
 
 end

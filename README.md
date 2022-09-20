@@ -4,13 +4,15 @@
 
 
 
-A simple package to merge PDF (Portable Document Format) files on Linux, OS X and Windows. Only two functions are exported:
-- `merge_pdf`
+A simple package to merge PDF (Portable Document Format) files on
+Linux, OS X and Windows. The following functions are exported:
+- `merge_pdfs`
 - `append_pdf!`
+- `split_pdf`
 
 ## Usage
 
-### Merge multible PDF files
+### Merging multible PDF files
 
 ```Julia
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf")
@@ -22,7 +24,7 @@ Use the `cleanup` option to delete the single files after merging:
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf", cleanup=true)
 ```
 
-### Append a PDF to another PDF
+### Appending a PDF to another PDF
 
 Appending with `append_pdf!` is particularly useful to create a single PDF
 that contains multiple plots on separate pages:
@@ -37,6 +39,15 @@ end
 ```
 All five plots are contained in `allplots.pdf` and the temporary file is deleted.
 
+
+### Splitting a PDF
+
+A PDF containing multiple pages can be split in single pages:
+```Julia
+split_pdf("book.pdf")
+```
+If the argument `cleanup = true` is given, the original document will
+be deleted.
 
 ## Acknowledgments
 
