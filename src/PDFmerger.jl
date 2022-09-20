@@ -109,7 +109,7 @@ end
 
 
 """
-Count number of pages
+Count pages numbers
 """
 function n_pages(file)
 
