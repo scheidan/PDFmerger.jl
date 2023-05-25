@@ -128,11 +128,11 @@ end
   split_pdf(file::AbstractString; cleanup::Bool = false)
 ```
 
-Split a pdf document in seperated pages.
+Split a pdf document in separated pages.
 
 ## Arguments
 
-- `file`: name of file to spitted
+- `file`: name of file to be splitted
 - `cleanup`: if `true`, `file` is deleted after splitting
 """
 function split_pdf(file::AbstractString; cleanup=false)
@@ -142,8 +142,8 @@ function split_pdf(file::AbstractString; cleanup=false)
     n = n_pages(file) |> ndigits
     numberformat = n > 1 ? "%0$(n)d" : "%d"
 
-    pdfseparate() do seperate
-        run(`$seperate $file $(file_no_ending)_$numberformat.pdf`)
+    pdfseparate() do separate
+        run(`$separate $file $(file_no_ending)_$numberformat.pdf`)
     end
 
     if cleanup
