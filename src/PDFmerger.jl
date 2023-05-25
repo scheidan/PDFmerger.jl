@@ -2,6 +2,7 @@ module PDFmerger
 
 import Base.Filesystem
 using Poppler_jll: pdfunite, pdfinfo, pdfseparate
+using Distributed: myid
 
 export merge_pdfs, split_pdf, append_pdf!
 
@@ -33,17 +34,20 @@ function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
     # See: https://gitlab.freedesktop.org/poppler/poppler/-/issues/334
     filemax = 200
 
+    # Get the id of the current process/worker, such that separate workers
+    # create separate temporary files and do not mess up files of other workers.
+    procid = myid()
     k = 1
     for files_part in Base.Iterators.partition(files, filemax)
         if k == 1
-            outfile_tmp2 = "_temp_destination_$k"
+            outfile_tmp2 = "_temp_destination_$(procid)_$k"
 
             pdfunite() do unite
                 run(`$unite $files_part $outfile_tmp2`)
             end
         else
-            outfile_tmp1 = "_temp_destination_$(k-1)"
-            outfile_tmp2 = "_temp_destination_$k"
+            outfile_tmp1 = "_temp_destination_$(procid)_$(k-1)"
+            outfile_tmp2 = "_temp_destination_$(procid)_$k"
 
             pdfunite() do unite
                 run(`$unite $outfile_tmp1 $files_part $outfile_tmp2`)
@@ -53,11 +57,11 @@ function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
     end
 
     # rename last file
-    Filesystem.mv("_temp_destination_$(k-1)", destination, force=true)
+    Filesystem.mv("_temp_destination_$(procid)_$(k-1)", destination, force=true)
 
     # remove temp files
     Filesystem.rm(destination * "_x_", force=true)
-    Filesystem.rm.("_temp_destination_$(i)" for i in 1:(k-2))
+    Filesystem.rm.("_temp_destination_$(procid)_$(i)" for i in 1:(k-2))
     if cleanup
         Filesystem.rm.(files, force=true)
     end
