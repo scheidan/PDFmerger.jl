@@ -1,14 +1,14 @@
 name = "PDFmerger"
 uuid = "3beb2ed1-af7d-458f-b727-6e9beb3586c0"
 authors = ["Andreas Scheidegger <andreas.scheidegger@eawag.ch> and contributors"]
-version = "0.3.0"
+version = "0.3.1"
 
 [deps]
 Poppler_jll = "9c32591e-4766-534b-9725-b71a8799265b"
 
 [compat]
 julia = "1.6"
-Poppler_jll = "^21.9"
+Poppler_jll = "^21.9, 23.12"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
