@@ -123,11 +123,11 @@ end
   split_pdf(file::AbstractString; cleanup::Bool = false)
 ```
 
-Split a pdf document in seperated pages.
+Split a pdf document in separated pages.
 
 ## Arguments
 
-- `file`: name of file to spitted
+- `file`: name of file to be splitted
 - `cleanup`: if `true`, `file` is deleted after splitting
 """
 function split_pdf(file::AbstractString; cleanup=false)
