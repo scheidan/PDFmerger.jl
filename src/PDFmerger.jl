@@ -38,27 +38,25 @@ function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
         if k == 1
             outfile_tmp2 = "_temp_destination_$k"
 
-            pdfunite() do unite
-                run(`$unite $files_part $outfile_tmp2`)
-            end
+            run(`$(pdfunite()) $files_part $outfile_tmp2`)
+
         else
             outfile_tmp1 = "_temp_destination_$(k-1)"
             outfile_tmp2 = "_temp_destination_$k"
 
-            pdfunite() do unite
-                run(`$unite $outfile_tmp1 $files_part $outfile_tmp2`)
-            end
+            run(`$(pdfunite()) $outfile_tmp1 $files_part $outfile_tmp2`)
+
         end
         k += 1
     end
 
     # rename last file
-    Filesystem.mv("_temp_destination_$(k-1)", destination, force=true)
+Filesystem.mv("_temp_destination_$(k-1)", destination, force=true)
 
-    # remove temp files
-    Filesystem.rm(destination * "_x_", force=true)
-    Filesystem.rm.("_temp_destination_$(i)" for i in 1:(k-2))
-    if cleanup
+# remove temp files
+Filesystem.rm(destination * "_x_", force=true)
+Filesystem.rm.("_temp_destination_$(i)" for i in 1:(k-2))
+if cleanup
         Filesystem.rm.(files, force=true)
     end
 
@@ -112,10 +110,7 @@ end
 Count pages numbers
 """
 function n_pages(file)
-
-    str = pdfinfo() do info
-        read(`$info $file`, String)
-    end
+    str = read(`$(pdfinfo()) $file`, String)
 
     m = match(r"Pages:\s+(?<npages>\d+)", str)
     isnothing(m) && error("Could not extract number of pages from:\n\n $str")
@@ -142,9 +137,7 @@ function split_pdf(file::AbstractString; cleanup=false)
     n = n_pages(file) |> ndigits
     numberformat = n > 1 ? "%0$(n)d" : "%d"
 
-    pdfseparate() do seperate
-        run(`$seperate $file $(file_no_ending)_$numberformat.pdf`)
-    end
+    run(`$(pdfseparate()) $file $(file_no_ending)_$numberformat.pdf`)
 
     if cleanup
         Filesystem.rm(file, force=true)
