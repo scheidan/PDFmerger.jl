@@ -55,4 +55,4 @@ All the heavy lifting is done by
 [`Poppler`](https://poppler.freedesktop.org/). Thanks to the maintainers
 of `Poppler` and [`Poppler_jll.jl`](https://github.com/JuliaBinaryWrappers/Poppler_jll.jl)!
 
-Thanks to @zauster for implementing separate temp files for each worker.
+Thanks to [@zauster](https://github.com/zauster) for implementing separate temp files for each worker.
