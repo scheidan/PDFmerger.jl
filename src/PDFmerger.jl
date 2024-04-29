@@ -61,7 +61,7 @@ function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
     Filesystem.mv("_temp_destination_$(identifier_stub)_$(k-1)", destination, force=true)
 
     # remove temp files
-    Filesystem.rm(destination * "_x_", force=true)
+    Filesystem.rm(destination * identifier_stub, force=true)
     Filesystem.rm.("_temp_destination_$(identifier_stub)_$(i)" for i in 1:(k-2))
     if cleanup
         Filesystem.rm.(files, force=true)

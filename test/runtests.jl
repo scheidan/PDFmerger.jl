@@ -31,6 +31,10 @@ end
     merge_pdfs([single_files..., out_file], out_file)
     @test PDFmerger.n_pages(out_file) == 2 + 2
 
+    # test merging existing file with itself
+    merge_pdfs([single_files..., out_file], out_file)
+    @test PDFmerger.n_pages(out_file) == 2 + (2 + 2)
+
     @test readdir(test_dir) |> length == 3
     @test all(PDFmerger.n_pages.(single_files) .== 1)
 
