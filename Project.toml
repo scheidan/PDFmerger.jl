@@ -1,7 +1,7 @@
 name = "PDFmerger"
 uuid = "3beb2ed1-af7d-458f-b727-6e9beb3586c0"
 authors = ["Andreas Scheidegger <andreas.scheidegger@eawag.ch> and contributors"]
-version = "0.3.1"
+version = "0.3.2"
 
 [deps]
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
