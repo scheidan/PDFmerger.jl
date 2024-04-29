@@ -23,30 +23,33 @@ Merge all PDF files listed in `files` into a PDF named `destination`. Returns th
 """
 function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
                     cleanup::Bool = false) where T <: AbstractString
+    # Get the process ID of the current Julia process and the ID of the current
+    # worker thread, such that separate process and workers create separate
+    # temporary files and do not mess up files of other workers.
+    process_id = getpid()
+    thread_id = myid()
+    identifier_stub = "_$(process_id)_$(thread_id)_"
     if destination ∈ files
         # rename existing file
-        Filesystem.mv(destination, destination * "_x_")
-        files[files .== destination] .=  destination * "_x_"
+        Filesystem.mv(destination, destination * identifier_stub)
+        files[files .== destination] .=  destination * identifier_stub
     end
 
     # Merge large number of files iteratively, because there
-    # is a (OS dependent) limit how many files 'pdfunit' can handel at once.
+    # is a (OS dependent) limit how many files 'pdfunit' can handle at once.
     # See: https://gitlab.freedesktop.org/poppler/poppler/-/issues/334
     filemax = 200
 
-    # Get the id of the current process/worker, such that separate workers
-    # create separate temporary files and do not mess up files of other workers.
-    procid = myid()
     k = 1
     for files_part in Base.Iterators.partition(files, filemax)
         if k == 1
-            outfile_tmp2 = "_temp_destination_$(procid)_$k"
+            outfile_tmp2 = "_temp_destination_$(identifier_stub)_$k"
 
             run(`$(pdfunite()) $files_part $outfile_tmp2`)
 
         else
-            outfile_tmp1 = "_temp_destination_$(procid)_$(k-1)"
-            outfile_tmp2 = "_temp_destination_$(procid)_$k"
+            outfile_tmp1 = "_temp_destination_$(identifier_stub)_$(k-1)"
+            outfile_tmp2 = "_temp_destination_$(identifier_stub)_$k"
 
             run(`$(pdfunite()) $outfile_tmp1 $files_part $outfile_tmp2`)
 
@@ -55,11 +58,11 @@ function merge_pdfs(files::Vector{T}, destination::AbstractString="merged.pdf";
     end
 
     # rename last file
-    Filesystem.mv("_temp_destination_$(procid)_$(k-1)", destination, force=true)
+    Filesystem.mv("_temp_destination_$(identifier_stub)_$(k-1)", destination, force=true)
 
     # remove temp files
     Filesystem.rm(destination * "_x_", force=true)
-    Filesystem.rm.("_temp_destination_$(procid)_$(i)" for i in 1:(k-2))
+    Filesystem.rm.("_temp_destination_$(identifier_stub)_$(i)" for i in 1:(k-2))
     if cleanup
         Filesystem.rm.(files, force=true)
     end
