@@ -8,7 +8,7 @@ Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 Poppler_jll = "9c32591e-4766-534b-9725-b71a8799265b"
 
 [compat]
-Poppler_jll = "23, 24"
+Poppler_jll = "23, 24, 25"
 julia = "1.6"
 
 [extras]
