@@ -12,7 +12,7 @@ Linux, OS X and Windows. The following functions are exported:
 
 ## Usage
 
-### Merging multible PDF files
+### Merging multiple PDF files
 
 ```Julia
 merge_pdfs(["file_1.pdf", "file_1.pdf", "file_2.pdf"], "merged.pdf")
