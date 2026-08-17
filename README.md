@@ -5,7 +5,7 @@
 
 
 A simple package to merge PDF (Portable Document Format) files on
-Linux, OS X and Windows. The following functions are exported:
+Linux, MacOS, and Windows. The following functions are exported:
 - `merge_pdfs`
 - `append_pdf!`
 - `split_pdf`
